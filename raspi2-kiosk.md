@@ -127,6 +127,7 @@ pacman -S xorg-server xorg-server-utils xorg-xinit --noconfirm # basic X11 packa
 pacman -S alsa-utils xf86-video-fbturbo --noconfirm # RasPi 2 sound and video drivers
 pacman -S matchbox-window-manager --noconfirm # super lightweight WM
 pacman -S midori unclutter xterm --noconfirm # unclutter hides your cursor
+pacman -S ttf-dejavu --noconfirm # set of nice fonts
 ```
 
 These packages only weigh in at only a few hundred MB, and are very low on
