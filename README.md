@@ -225,7 +225,7 @@ Conclusions
 * WM and web browser are super lightweight and will not tax your RasPi, unless
   you purposely load some heavy web-content. Memory usage is around 125 MB with
   a simple website loaded.
-* You can simple plug your RasPi in and everything will load automatically. No
+* You can simply plug your RasPi in and everything will load automatically. No
   user input, keyboard, or mouse needed.
 
 ### Deficiencies:
