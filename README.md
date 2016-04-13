@@ -72,12 +72,14 @@ echo oracle > /etc/hostname # changes the hostname of the machine
 ```
 
 Next, we should create a user with standard privileges. In this example, we
-create an account for `pi`, with password `raspberry`,
+create an account for `pi`,
 
 ```sh
 useradd -m -g users -s /bin/bash -d /home/pi pi
-echo "pi:raspberry" | chpasswd
 ```
+
+and we can change the password for `pi` by issuing `passwd pi`.
+
 
 ### RasPi specific options
 
