@@ -1,4 +1,4 @@
-Installing a minimal Arch Linux kiosk on a RasPi 2
+Installing a lightweight kiosk on a RasPi 2 with Arch Linux
 ==================================================
 
 Arch Linux is both lightweight and highly customizable, and is the perfect
@@ -10,7 +10,7 @@ Arch Linux on the RasPi 2 can be found on the [Official Arch Linux ARM wiki]
 Getting started
 --------------------------------------------------
 
-For this tutorial we will use the pre-made Arch Linux RasPi 2
+For this guide we will use the pre-made Arch Linux RasPi 2
 [image](https://sourceforge.net/projects/archlinux-rpi2/). You can copy the
 image to your microSD card using any of the [standard methods]
 (https://www.raspberrypi.org/documentation/installation/installing-images/README.md)
@@ -177,9 +177,8 @@ xterm &         # launches a helpful terminal
 midori -e Fullscreen -a https://www.raspberrypi.org # opens midori fullscreen
 ```
 
-I also include the script attached to this gist, that you can copy directly to
-your home directory. It does not need to be executable. You should try the
-script out with
+I also include the script in this repo that you can copy directly to your home
+directory. It does not need to be executable. You should try the script out with
 
 ```sh
 xinit ./startkiosk.sh
