@@ -89,10 +89,11 @@ ln -sf /usr/share/zoneinfo/America/Mexico_City /etc/localtime <span class="pl-c"
 <span class="pl-c1">echo</span> oracle <span class="pl-k">&gt;</span> /etc/hostname <span class="pl-c"># changes the hostname of the machine</span></pre></div>
 
 <p>Next, we should create a user with standard privileges. In this example, we
-create an account for <code>pi</code>, with password <code>raspberry</code>,</p>
+create an account for <code>pi</code>,</p>
 
-<div class="highlight highlight-source-shell"><pre>useradd -m -g users -s /bin/bash -d /home/pi pi
-<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>pi:raspberry<span class="pl-pds">"</span></span> <span class="pl-k">|</span> chpasswd</pre></div>
+<div class="highlight highlight-source-shell"><pre>useradd -m -g users -s /bin/bash -d /home/pi pi</pre></div>
+
+<p>and we can change the password for <code>pi</code> by issuing <code>passwd pi</code>.</p>
 
 <h3>
 <a id="raspi-specific-options" class="anchor" href="#raspi-specific-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>RasPi specific options</h3>
