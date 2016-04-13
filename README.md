@@ -217,14 +217,14 @@ Conclusions
 --------------------------------------------------
 
 ### Achievements: 
-* Using a RasPi 2 is a cost-effective way to create a simple kiosk machine
+* Using a RasPi 2 is a cost-effective way to create a basic kiosk machine
   capable of displaying a website. 
 * Simple script approach does not require superuser access nor changing any
   system files. If you don't want to use it anymore you can simple comment one
   line in the .bash_profile.
 * WM and web browser are super lightweight and will not tax your RasPi, unless
   you purposely load some heavy web-content. Memory usage is around 125 MB with
-  a simple website loaded.
+  a plain website loaded.
 * You can simply plug your RasPi in and everything will load automatically. No
   user input, keyboard, or mouse needed.
 
