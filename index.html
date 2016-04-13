@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Raspi2-kiosk by roguephysicist</title>
+    <title>RasPi2-kiosk by roguephysicist</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/github-light.css">
@@ -15,7 +15,7 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>Raspi2-kiosk</h1>
+        <h1>RasPi2-kiosk</h1>
         <p>Guide for setting up a RasPi 2 to work as a lightweight kiosk with Arch Linux.</p>
 
         <p class="view"><a href="https://github.com/roguephysicist/RasPi2-Kiosk">View the Project on GitHub <small>roguephysicist/RasPi2-Kiosk</small></a></p>
@@ -29,7 +29,7 @@
       </header>
       <section>
         <h1>
-<a id="installing-a-minimal-arch-linux-kiosk-on-a-raspi-2" class="anchor" href="#installing-a-minimal-arch-linux-kiosk-on-a-raspi-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installing a minimal Arch Linux kiosk on a RasPi 2</h1>
+<a id="installing-a-lightweight-kiosk-on-a-raspi-2-with-arch-linux" class="anchor" href="#installing-a-lightweight-kiosk-on-a-raspi-2-with-arch-linux" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installing a lightweight kiosk on a RasPi 2 with Arch Linux</h1>
 
 <p>Arch Linux is both lightweight and highly customizable, and is the perfect
 distro for creating a kiosk using the low-powered RasPi 2. Full details about
@@ -38,7 +38,7 @@ Arch Linux on the RasPi 2 can be found on the <a href="https://archlinuxarm.org/
 <h2>
 <a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting started</h2>
 
-<p>For this tutorial we will use the pre-made Arch Linux RasPi 2
+<p>For this guide we will use the pre-made Arch Linux RasPi 2
 <a href="https://sourceforge.net/projects/archlinux-rpi2/">image</a>. You can copy the
 image to your microSD card using any of the <a href="https://www.raspberrypi.org/documentation/installation/installing-images/README.md">standard methods</a>
 available for your OS.</p>
@@ -188,9 +188,8 @@ matchbox-window-manager <span class="pl-k">&amp;</span> <span class="pl-c"># sta
 xterm <span class="pl-k">&amp;</span>         <span class="pl-c"># launches a helpful terminal</span>
 midori -e Fullscreen -a https://www.raspberrypi.org <span class="pl-c"># opens midori fullscreen</span></pre></div>
 
-<p>I also include the script attached to this gist, that you can copy directly to
-your home directory. It does not need to be executable. You should try the
-script out with</p>
+<p>I also include the script in this repo that you can copy directly to your home
+directory. It does not need to be executable. You should try the script out with</p>
 
 <div class="highlight highlight-source-shell"><pre>xinit ./startkiosk.sh</pre></div>
 
