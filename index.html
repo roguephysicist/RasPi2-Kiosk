@@ -1,0 +1,256 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Raspi2-kiosk by roguephysicist</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Raspi2-kiosk</h1>
+        <p>Guide for setting up a RasPi 2 to work as a lightweight kiosk with Arch Linux.</p>
+
+        <p class="view"><a href="https://github.com/roguephysicist/RasPi2-Kiosk">View the Project on GitHub <small>roguephysicist/RasPi2-Kiosk</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/roguephysicist/RasPi2-Kiosk/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/roguephysicist/RasPi2-Kiosk/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/roguephysicist/RasPi2-Kiosk">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="installing-a-minimal-arch-linux-kiosk-on-a-raspi-2" class="anchor" href="#installing-a-minimal-arch-linux-kiosk-on-a-raspi-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installing a minimal Arch Linux kiosk on a RasPi 2</h1>
+
+<p>Arch Linux is both lightweight and highly customizable, and is the perfect
+distro for creating a kiosk using the low-powered RasPi 2. Full details about
+Arch Linux on the RasPi 2 can be found on the <a href="https://archlinuxarm.org/platforms/armv7/broadcom/raspberry-pi-2">Official Arch Linux ARM wiki</a>.</p>
+
+<h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting started</h2>
+
+<p>For this tutorial we will use the pre-made Arch Linux RasPi 2
+<a href="https://sourceforge.net/projects/archlinux-rpi2/">image</a>. You can copy the
+image to your microSD card using any of the <a href="https://www.raspberrypi.org/documentation/installation/installing-images/README.md">standard methods</a>
+available for your OS.</p>
+
+<p>After booting into the RasPi 2, we are presented with a virtual console. We
+login to the superuser:</p>
+
+<pre><code>user: root
+pass: root
+</code></pre>
+
+<p>Now's a good time to change the root password to something very secure.</p>
+
+<p>We should first expand the root filesystem to the full size of the microSD card.
+Any partitioning utility will work for this purpose; I will use <code>fdisk</code> here. We
+run </p>
+
+<div class="highlight highlight-source-shell"><pre>fdisk /dev/mmcblk0</pre></div>
+
+<p>to open the utility acting on our microSD card. We need to delete the root
+partition and then recreate it with the desired size. There are <a href="http://elinux.org/RPi_Resize_Flash_Partitions#Manually_resizing_the_SD_card_on_Raspberry_Pi">many</a>
+<a href="https://raspberry-hosting.com/en/faq/how-expand-arch-linux-root-partition">tutorials</a>
+available for this procedure. I suggest creating a primary partition, but an
+extended partition is also perfectly fine. This is also a good time to make a
+swap partition but for this application I do not consider it necessary.</p>
+
+<p>After creating the new partition over the full card size, you need to restart
+the computer by issuing the <code>reboot</code> command. After you are logged into root
+again, expand the partition to fill the newly assigned space by running</p>
+
+<div class="highlight highlight-source-shell"><pre>resize2fs /dev/mmcblk0p2</pre></div>
+
+<p>which assumes that your new root partition is located at <code>/dev/mmcblk0p2</code>.</p>
+
+<h2>
+<a id="basic-system-configuration" class="anchor" href="#basic-system-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Basic system configuration</h2>
+
+<p>Now that we have the bare-bones system in place, we can configure it and install
+the necessary software. First, we should configure some basic system aspects. In
+this example, I'll call the new system <code>oracle</code>:</p>
+
+<div class="highlight highlight-source-shell"><pre>loadkeys us <span class="pl-c"># loads US keyboard keymap</span>
+sed -i <span class="pl-s"><span class="pl-pds">'</span>s/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g<span class="pl-pds">'</span></span> /etc/locale.gen
+locale-gen <span class="pl-c"># generates en_US.UTF-8 locale</span>
+ln -sf /usr/share/zoneinfo/America/Mexico_City /etc/localtime <span class="pl-c"># sets time zone</span>
+<span class="pl-c1">echo</span> LANG=en_US.UTF-8 <span class="pl-k">&gt;</span> /etc/locale.conf <span class="pl-c"># sets en_US.UTF-8 as default locale</span>
+<span class="pl-c1">echo</span> KEYMAP=us <span class="pl-k">&gt;</span> /etc/vconsole.conf <span class="pl-c"># sets US keymap as default</span>
+<span class="pl-c1">echo</span> oracle <span class="pl-k">&gt;</span> /etc/hostname <span class="pl-c"># changes the hostname of the machine</span></pre></div>
+
+<p>Next, we should create a user with standard privileges. In this example, we
+create an account for <code>pi</code>, with password <code>raspberry</code>,</p>
+
+<div class="highlight highlight-source-shell"><pre>useradd -m -g users -s /bin/bash -d /home/pi pi
+<span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>pi:raspberry<span class="pl-pds">"</span></span> <span class="pl-k">|</span> chpasswd</pre></div>
+
+<h3>
+<a id="raspi-specific-options" class="anchor" href="#raspi-specific-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>RasPi specific options</h3>
+
+<p>Lastly, we configure a few RasPi specific options. See the
+<a href="https://www.raspberrypi.org/documentation/configuration/config-txt.md">official documentation</a> 
+for full details on editing the <code>config.txt</code> file. We run</p>
+
+<div class="highlight highlight-source-shell"><pre>sed -i <span class="pl-s"><span class="pl-pds">'</span>s/#disable_overscan=1/disable_overscan=1/g<span class="pl-pds">'</span></span> /boot/config.txt
+sed -i <span class="pl-s"><span class="pl-pds">'</span>s/gpu_mem=64/gpu_mem=128/g<span class="pl-pds">'</span></span> /boot/config.txt</pre></div>
+
+<p>This disables overscanning so that the display image goes edge-to-edge. It also
+increase the GPU memory from 64 MB to 128 MB.</p>
+
+<p>It may be desirable to rotate the screen so that it is in portrait mode, useful
+for displaying a long page without scrolling. This can be accomplished by
+editing the <code>/boot/config.txt</code> file and changing <code>display_rotate=0</code> to
+<code>display_rotate=1</code> or <code>display_rotate=3</code> depending on the orientation of your
+monitor. It may also be necessary to increase the GPU memory from 128 MB to 256
+MB. </p>
+
+<p>This is a convenient point to restart the machine again by issuing the <code>reboot</code>
+command. Everything we have set up so far will take effect after restarting. </p>
+
+<h2>
+<a id="setting-up-the-kiosk" class="anchor" href="#setting-up-the-kiosk" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setting up the kiosk</h2>
+
+<p>We now have a fully configured RasPi, and we are ready to install the necessary
+packages for the kiosk. To do this, I have selected some lightweight
+applications:</p>
+
+<ul>
+<li>
+<code>xorg</code>, the standard GUI display server and utilities,</li>
+<li>
+<code>matchbox-window-manager</code>, an ultra-lightweight WM with limited interface,</li>
+<li>
+<code>midori</code>, a lightweight web browser with a CLI, and</li>
+<li>
+<code>xterm</code>, a basic and lightweight terminal emulator.</li>
+</ul>
+
+<p>Log in as <code>root</code> once again. The following commands will install these packages;
+make sure you have a good internet connection.</p>
+
+<div class="highlight highlight-source-shell"><pre>pacman -Syu --noconfirm <span class="pl-c"># system updates, may take a little while</span>
+pacman -S htop vim wget --noconfirm <span class="pl-c"># useful utils</span>
+pacman -S xorg-server xorg-server-utils xorg-xinit --noconfirm <span class="pl-c"># basic X11 packages</span>
+pacman -S alsa-utils xf86-video-fbturbo --noconfirm <span class="pl-c"># RasPi 2 sound and video drivers</span>
+pacman -S matchbox-window-manager --noconfirm <span class="pl-c"># super lightweight WM</span>
+pacman -S midori unclutter xterm --noconfirm <span class="pl-c"># unclutter hides your cursor</span>
+pacman -S ttf-dejavu --noconfirm <span class="pl-c"># set of nice fonts</span></pre></div>
+
+<p>These packages only weigh in at only a few hundred MB, and are very low on
+resource consumption. Installing them should only take a few minutes. Now that
+our system is fully installed we need to set it up to run as an automated kiosk.</p>
+
+<h3>
+<a id="auto-login-to-unprivileged-user" class="anchor" href="#auto-login-to-unprivileged-user" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Auto-login to unprivileged user</h3>
+
+<p>We want the system to automatically log in as the unprivileged user. We simply
+follow the <a href="https://wiki.archlinux.org/index.php/automatic_login_to_virtual_console">documentation</a>, 
+which can be summed up as</p>
+
+<div class="highlight highlight-source-shell"><pre>$ cat /etc/systemd/system/getty@tty1.service.d/override.conf
+
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty --autologin pi --noclear %I <span class="pl-smi">$TERM</span></pre></div>
+
+<p>You can restart the machine to test this out. It should log in directly to the
+<code>pi</code> user.</p>
+
+<h3>
+<a id="autostarting-x-at-login" class="anchor" href="#autostarting-x-at-login" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Autostarting X at login</h3>
+
+<p>There are several ways autostart the WM at login. Refer to the <a href="https://wiki.archlinux.org/index.php/Xinitrc#Autostart_X_at_login">documentation</a> for more
+details on accomplishing this. I opted for a simple script that will execute
+from the <code>.bash_profile</code> of the user when logged in. This approach does not
+require the superuser and is very flexible.</p>
+
+<p>We first create a shell script in our home directory. I call it <code>startkiosk.sh</code>
+here, but you can use whatever you want. The script contains the following:</p>
+
+<div class="highlight highlight-source-shell"><pre>$ cat <span class="pl-k">~</span>/startkiosk.sh
+
+<span class="pl-c">#!/bin/sh</span>
+xset -dpms      <span class="pl-c"># disable DPMS (Energy Star) features.</span>
+xset s off      <span class="pl-c"># disable screen saver</span>
+xset s noblank  <span class="pl-c"># don't blank the video device</span>
+unclutter <span class="pl-k">&amp;</span>     <span class="pl-c"># hides your cursor after inactivity</span>
+matchbox-window-manager <span class="pl-k">&amp;</span> <span class="pl-c"># starts the WM</span>
+xterm <span class="pl-k">&amp;</span>         <span class="pl-c"># launches a helpful terminal</span>
+midori -e Fullscreen -a https://www.raspberrypi.org <span class="pl-c"># opens midori fullscreen</span></pre></div>
+
+<p>I also include the script attached to this gist, that you can copy directly to
+your home directory. It does not need to be executable. You should try the
+script out with</p>
+
+<div class="highlight highlight-source-shell"><pre>xinit ./startkiosk.sh</pre></div>
+
+<p>This should open up a fullscreen terminal window and then a fullscreen instance
+of Midori, loading the website of your choice. You can <code>alt + tab</code> into the
+terminal at any moment to install a program, modify the scripts, or even restart
+or shutdown the machine. The way the script is organized causes the terminal
+window to end up behind Midori, so you can boot into the machine knowing that it
+will display the correct thing without any interaction from your part. When you
+are done with the test, you can kill the X session with</p>
+
+<div class="highlight highlight-source-shell"><pre>pkill -15 Xorg</pre></div>
+
+<p>This will dump you back at the command line. So, now all we have to do is to run
+the script at login time. The easiest way of doing this can also be found in the
+<a href="https://wiki.archlinux.org/index.php/Xinitrc#Autostart_X_at_login">documentation</a>. We'll 
+simply add a line to the end of your .bash_profile that tells the system to run
+the appropriate command. We can do this with a nice one liner like</p>
+
+<pre><code>printf '[[ -z $DISPLAY &amp;&amp; $XDG_VTNR -eq 1 ]] &amp;&amp; xinit ./startkiosk.sh\n' &gt;&gt; .bash_profile
+</code></pre>
+
+<p>Restart one last time and your RasPi should boot directly into your fullscreen
+browser!</p>
+
+<h2>
+<a id="conclusions" class="anchor" href="#conclusions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Conclusions</h2>
+
+<h3>
+<a id="achievements" class="anchor" href="#achievements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Achievements:</h3>
+
+<ul>
+<li>Using a RasPi 2 is a cost-effective way to create a simple kiosk machine
+capable of displaying a website. </li>
+<li>Simple script approach does not require superuser access nor changing any
+system files. If you don't want to use it anymore you can simple comment one
+line in the .bash_profile.</li>
+<li>WM and web browser are super lightweight and will not tax your RasPi, unless
+you purposely load some heavy web-content. Memory usage is around 125 MB with
+a simple website loaded.</li>
+<li>You can simple plug your RasPi in and everything will load automatically. No
+user input, keyboard, or mouse needed.</li>
+</ul>
+
+<h3>
+<a id="deficiencies" class="anchor" href="#deficiencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Deficiencies:</h3>
+
+<ul>
+<li>The RasPi will never sleep or shut off the display. The settings should be
+tweaked so that it turns on and shuts off the display at certain hours.</li>
+<li>As is, it only displays one website. It would be nice to have several open
+that can be cycled through automatically.</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/roguephysicist">roguephysicist</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
